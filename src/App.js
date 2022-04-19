@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 function User(user) {
-    console.log(user);
     return (
-        <li>
+        <li key={user.id}>
             <img src={user.picture.medium} />
             <p>
                 {user.name.first} {user.name.last}
@@ -16,20 +15,11 @@ function User(user) {
 }
 
 function App() {
-    const [users, setUsers] = useState([
-        {
-            picture: {},
-            name: {
-                first: "John",
-                last: "Example",
-            },
-            email: "a@a.a",
-        },
-    ]);
+
+    const [users, setUsers] = useState(false);
 
     useEffect(() => {
         const url = "https://randomuser.me/api/?results=15&&gender=female";
-        //https://randomuser.me/api/?results=50"; // Get 10 random users
 
         // This takes the raw response from the server and returns just the json.
         const responseHandler = (response) => {
@@ -40,6 +30,7 @@ function App() {
         fetch(url)
             .then(responseHandler)
             .then((json) => setUsers(json.results));
+
     }, []);
 
     return (
@@ -62,12 +53,13 @@ function App() {
             </div>
 
             <div className="block">
-                <ul id="users">{users.map(User)}</ul>
+                <button onClick={() => setUsers(users.slice(1))}>Remove first</button>
+                <ul id="users">
+                    {users && users.map(User)}
+                </ul>
             </div>
         </div>
     );
 }
-
-const ul = document.getElementById("users"); // Get the element where we will place our users
 
 export default App;
