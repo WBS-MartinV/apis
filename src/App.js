@@ -3,7 +3,7 @@ import "./App.css";
 
 function User(user) {
     return (
-        <li key={user.id}>
+        <li key={user.phone}>
             <img src={user.picture.medium} />
             <p>
                 {user.name.first} {user.name.last}
@@ -15,23 +15,19 @@ function User(user) {
 }
 
 function App() {
-
     const [users, setUsers] = useState(false);
+    const [query, setQuery] = useState("?results=15&&gender=female");
 
-    useEffect(() => {
-        const url = "https://randomuser.me/api/?results=15&&gender=female";
+    const url = "https://randomuser.me/api/";
 
-        // This takes the raw response from the server and returns just the json.
-        const responseHandler = (response) => {
-            console.debug(response);
-            return response.json();
-        };
-
-        fetch(url)
-            .then(responseHandler)
-            .then((json) => setUsers(json.results));
-
-    }, []);
+    useEffect(
+        () => {
+            fetch(url + query)
+                .then((response) => response.json())
+                .then((json) => setUsers(json.results))
+        },
+        [query]
+    );
 
     return (
         <div className="App">
@@ -53,10 +49,11 @@ function App() {
             </div>
 
             <div className="block">
-                <button onClick={() => setUsers(users.slice(1))}>Remove first</button>
-                <ul id="users">
-                    {users && users.map(User)}
-                </ul>
+                <input value={query} onChange={(e) => setQuery(e.target.value)}></input>
+                <button onClick={() => setUsers(users.slice(1))}>
+                    Remove first
+                </button>
+                <ul id="users">{users && users.map(User)}</ul>
             </div>
         </div>
     );
