@@ -16,40 +16,41 @@ function User(user) {
 
 function App() {
     const [users, setUsers] = useState(false);
-    const [query, setQuery] = useState("?results=15&&gender=female");
+    // const [query, setQuery] = useState("?results=15&gender=female");
+    const [number, setNumber] = useState(10);
+    const [gender, setGender] = useState(undefined);
 
     const url = "https://randomuser.me/api/";
 
-    useEffect(
-        () => {
-            fetch(url + query)
-                .then((response) => response.json())
-                .then((json) => setUsers(json.results))
-        },
-        [query]
-    );
+    useEffect(() => {
+        fetch(url + `?results=${number}&gender=${gender}`)
+            .then((response) => response.json())
+            .then((json) => setUsers(json.results));
+    }, [number, gender]);
 
     return (
         <div className="App">
-            <h1>My Amazing Users</h1>
-
             <div className="block">
-                In this exercise you will have to fetch the data from an API
-                <br />
-                <br />
-                Look at the instructions in <strong>index.js</strong>
-                <br />
-                <a
-                    className="link"
-                    target="_blank"
-                    href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch"
+                <input
+                    type="range"
+                    value={number}
+                    onChange={(e) => setNumber(e.target.value)}
+                />{" "}
+                {number}
+                <button
+                    style={{ color: gender === "male" ? "red" : "black" }}
+                    onClick={() => setGender(gender === "male" ? "" : "male")}
                 >
-                    Help
-                </a>
-            </div>
-
-            <div className="block">
-                <input value={query} onChange={(e) => setQuery(e.target.value)}></input>
+                    Male
+                </button>
+                <button
+                    style={{ color: gender === "female" ? "red" : "black" }}
+                    onClick={() =>
+                        setGender(gender === "female" ? "" : "female")
+                    }
+                >
+                    Female
+                </button>
                 <button onClick={() => setUsers(users.slice(1))}>
                     Remove first
                 </button>
